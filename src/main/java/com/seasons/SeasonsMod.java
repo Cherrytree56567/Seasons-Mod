@@ -35,7 +35,7 @@ public class SeasonsMod implements ModInitializer {
      */
     private static int lastSeason = -1;
     private static boolean fogActive = false;
-    private static int fogTimer = 0;
+    private static long nextFogTime = 0;
 
     public enum Season {
 		SPRING,
@@ -96,13 +96,17 @@ public class SeasonsMod implements ModInitializer {
          * between 2 mins and 1 minecraft day.
          */
         Random random = new Random();
+        long currentTime = world.getTime();
+
+        if (currentTime < nextFogTime) {
+            return;
+        }
 
         if (fogActive) {
-            fogTimer--;
-            if (fogTimer <= 0) {
-                fogActive = false;
+            fogActive = false;
+            for (ServerPlayerEntity player : world.getPlayers()) {
+                sendMessage(player, "Fog ended.");
             }
-            return;
         }
 
         if (!fogActive) {
@@ -120,7 +124,7 @@ public class SeasonsMod implements ModInitializer {
                     sendMessage(player, "Fog has been enabled for " + duration + " ticks with a cooldown of " + cooldown + " ticks.");
                 }
                 fogActive = true;
-                fogTimer = duration + cooldown;
+                nextFogTime = currentTime + duration + cooldown;
             }
         }
     }
