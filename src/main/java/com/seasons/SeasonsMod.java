@@ -34,6 +34,7 @@ public class SeasonsMod implements ModInitializer {
      * Season Variables
      */
     private static int lastSeason = -1;
+    private static boolean fogActive = false;
     private static int fogTimer = 0;
 
     public enum Season {
@@ -96,17 +97,18 @@ public class SeasonsMod implements ModInitializer {
          */
         Random random = new Random();
 
-        int duration = 2400 + random.nextInt(24000 - 2400 + 1);
-
-        if (fogTimer > 0) { 
+        if (fogActive) {
             fogTimer--;
-            for (ServerPlayerEntity player : world.getPlayers()) {
-                sendMessage(player, "Decreasing timer for fog: " + fogTimer);
+            if (fogTimer <= 0) {
+                fogActive = false;
             }
+            return;
         }
 
-        if (fogTimer == 0) {
+        if (!fogActive) {
             if (random.nextInt(20) == 0) {
+                int duration = 2400 + random.nextInt(24000 - 2400 + 1);
+                int cooldown = 2400 + random.nextInt(4800);
                 PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
                 buf.writeBoolean(true); // Enable Fog
                 buf.writeInt(duration); // How long to enable Fog
@@ -115,15 +117,15 @@ public class SeasonsMod implements ModInitializer {
 
                 for (ServerPlayerEntity player : world.getPlayers()) {
                     ServerPlayNetworking.send(player, payload);
-                    sendMessage(player, "Fog has been enabled for " + duration + " ticks.");
+                    sendMessage(player, "Fog has been enabled for " + duration + " ticks with a cooldown of " + cooldown + " ticks.");
                 }
-                fogTimer = duration;
+                fogActive = true;
+                fogTimer = duration + cooldown;
             }
         }
     }
 
     public static void register() {
-        fogTimer = 0;
         PayloadTypeRegistry.playS2C().register(FogPayload.ID, FogPayload.CODEC);
 
         ServerTickEvents.END_SERVER_TICK.register(server -> {
