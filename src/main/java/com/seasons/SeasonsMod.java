@@ -123,6 +123,7 @@ public class SeasonsMod implements ModInitializer {
     }
 
     public static void register() {
+        fogTimer = 0;
         PayloadTypeRegistry.playS2C().register(FogPayload.ID, FogPayload.CODEC);
 
         ServerTickEvents.END_SERVER_TICK.register(server -> {
