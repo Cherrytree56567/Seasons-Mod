@@ -10,10 +10,14 @@ import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.s2c.common.CustomPayloadS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.util.Identifier;
+import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.server.command.CommandManager.argument;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 
 import java.util.Random;
 
@@ -35,7 +39,7 @@ public class SeasonsMod implements ModInitializer {
      */
     private static int lastSeason = -1;
     private static boolean fogActive = false;
-    private static long nextFogTime = 0;
+    private static int fogTimer = 0;
 
     public enum Season {
 		SPRING,
@@ -96,17 +100,16 @@ public class SeasonsMod implements ModInitializer {
          * between 2 mins and 1 minecraft day.
          */
         Random random = new Random();
-        long currentTime = world.getTime();
-
-        if (currentTime < nextFogTime) {
-            return;
-        }
 
         if (fogActive) {
-            fogActive = false;
-            for (ServerPlayerEntity player : world.getPlayers()) {
-                sendMessage(player, "Fog ended.");
+            fogTimer--;
+            if (fogTimer <= 0) {
+                fogActive = false;
             }
+            for (ServerPlayerEntity player : world.getPlayers()) {
+                sendMessage(player, "Fog timer: " + fogTimer);
+            }
+            return;
         }
 
         if (!fogActive) {
@@ -124,7 +127,7 @@ public class SeasonsMod implements ModInitializer {
                     sendMessage(player, "Fog has been enabled for " + duration + " ticks with a cooldown of " + cooldown + " ticks.");
                 }
                 fogActive = true;
-                nextFogTime = currentTime + duration + cooldown;
+                fogTimer = duration + cooldown;
             }
         }
     }
@@ -145,6 +148,50 @@ public class SeasonsMod implements ModInitializer {
                     });
                 }
             });
+        });
+
+        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
+            dispatcher.register(literal("fog")
+                .then(literal("stop")
+                    .executes(context -> {
+                        ServerPlayerEntity player = context.getSource().getPlayer();
+                        SeasonsMod.fogActive = false;
+                        fogTimer = 0;
+                        player.sendMessage(Text.literal("Fog stopped!"), false);
+                        return 1;
+                    })
+                )
+                .then(literal("reset")
+                    .executes(context -> {
+                        ServerPlayerEntity player = context.getSource().getPlayer();
+                        fogTimer = 0;
+                        player.sendMessage(Text.literal("Fog timer reset!"), false);
+                        return 1;
+                    })
+                )
+                .then(literal("add")
+                    .then(argument("ticks", IntegerArgumentType.integer())
+                        .executes(context -> {
+                            int ticks = IntegerArgumentType.getInteger(context, "ticks");
+                            ServerPlayerEntity player = context.getSource().getPlayer();
+                            fogTimer += ticks;
+                            player.sendMessage(Text.literal("Added " + ticks + " ticks to fog timer."), false);
+                            return 1;
+                        })
+                    )
+                )
+                .then(literal("set")
+                    .then(argument("ticks", IntegerArgumentType.integer())
+                        .executes(context -> {
+                            int ticks = IntegerArgumentType.getInteger(context, "ticks");
+                            fogTimer = ticks;
+                            ServerPlayerEntity player = context.getSource().getPlayer();
+                            player.sendMessage(Text.literal("Fog timer set to tick " + ticks), false);
+                            return 1;
+                        })
+                    )
+                )
+            );
         });
     }
 
