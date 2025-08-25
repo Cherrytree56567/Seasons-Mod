@@ -112,9 +112,6 @@ public class SeasonsMod implements ModInitializer {
         if (!fogActive) {
             int duration = 2400 + random.nextInt(24000 - 2400 + 1);
             int cooldown = 2400 + random.nextInt(4800);
-            PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-            buf.writeBoolean(true); // Enable Fog
-            buf.writeInt(duration); // How long to enable Fog
 
             FogPayload payload = new FogPayload(true, duration);
 
