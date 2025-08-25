@@ -34,6 +34,7 @@ public class SeasonsMod implements ModInitializer {
      * Season Variables
      */
     private static int lastSeason = -1;
+    private static int fogTimer = 0;
 
     public enum Season {
 		SPRING,
@@ -97,15 +98,26 @@ public class SeasonsMod implements ModInitializer {
 
         int duration = 2400 + random.nextInt(24000 - 2400 + 1);
 
-        if (random.nextInt(20) == 0) {
-            PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-            buf.writeBoolean(true); // Enable Fog
-            buf.writeInt(duration); // How long to enable Fog
-
-            FogPayload payload = new FogPayload(true, duration);
-
+        if (fogTimer > 0) { 
+            fogTimer--;
             for (ServerPlayerEntity player : world.getPlayers()) {
-                ServerPlayNetworking.send(player, payload);
+                sendMessage(player, "Decreasing timer for fog: " + fogTimer);
+            }
+        }
+
+        if (fogTimer == 0) {
+            if (random.nextInt(20) == 0) {
+                PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+                buf.writeBoolean(true); // Enable Fog
+                buf.writeInt(duration); // How long to enable Fog
+
+                FogPayload payload = new FogPayload(true, duration);
+
+                for (ServerPlayerEntity player : world.getPlayers()) {
+                    ServerPlayNetworking.send(player, payload);
+                    sendMessage(player, "Fog has been enabled for " + duration + " ticks.");
+                }
+                fogTimer = duration;
             }
         }
     }
