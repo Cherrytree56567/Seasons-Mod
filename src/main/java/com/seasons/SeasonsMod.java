@@ -106,29 +106,24 @@ public class SeasonsMod implements ModInitializer {
             if (fogTimer <= 0) {
                 fogActive = false;
             }
-            for (ServerPlayerEntity player : world.getPlayers()) {
-                sendMessage(player, "Fog timer: " + fogTimer);
-            }
             return;
         }
 
         if (!fogActive) {
-            if (random.nextInt(20) == 0) {
-                int duration = 2400 + random.nextInt(24000 - 2400 + 1);
-                int cooldown = 2400 + random.nextInt(4800);
-                PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-                buf.writeBoolean(true); // Enable Fog
-                buf.writeInt(duration); // How long to enable Fog
+            int duration = 2400 + random.nextInt(24000 - 2400 + 1);
+            int cooldown = 2400 + random.nextInt(4800);
+            PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+            buf.writeBoolean(true); // Enable Fog
+            buf.writeInt(duration); // How long to enable Fog
 
-                FogPayload payload = new FogPayload(true, duration);
+            FogPayload payload = new FogPayload(true, duration);
 
-                for (ServerPlayerEntity player : world.getPlayers()) {
-                    ServerPlayNetworking.send(player, payload);
-                    sendMessage(player, "Fog has been enabled for " + duration + " ticks with a cooldown of " + cooldown + " ticks.");
-                }
-                fogActive = true;
-                fogTimer = duration + cooldown;
+            for (ServerPlayerEntity player : world.getPlayers()) {
+                ServerPlayNetworking.send(player, payload);
+                sendMessage(player, "Fog has been enabled for " + duration + " ticks with a cooldown of " + cooldown + " ticks.");
             }
+            fogActive = true;
+            fogTimer = duration + cooldown;
         }
     }
 

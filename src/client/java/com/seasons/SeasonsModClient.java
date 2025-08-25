@@ -14,7 +14,11 @@ public class SeasonsModClient implements ClientModInitializer {
 			boolean fogEnabled = payload.fogEnabled();
 			int fogTimer = payload.duration();
 
-			MinecraftClient.getInstance().inGameHud.setOverlayMessage(Text.literal("Fog active!"), false);
+			MinecraftClient.getInstance().execute(() -> {
+                MinecraftClient.getInstance().inGameHud.setOverlayMessage(
+                    Text.literal("Fog enabled for " + fogTimer + " ticks"), false
+                );
+            });
 		});
 	}
 
