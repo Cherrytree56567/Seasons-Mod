@@ -19,8 +19,10 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.biome.Biome.Precipitation;
 import net.minecraft.client.render.BackgroundRenderer;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.RenderLayer;
@@ -73,7 +75,18 @@ public class Winter {
                 }
             }
 
-            fogZones.forEach(FogZone::tick);
+            fogZones.forEach(FogZone::tick);if (client.world == null) return;
+
+            if (client.player != null && client.world != null) {
+                if (client.world.getBiome(client.player.getBlockPos()).value().getPrecipitation(client.player.getBlockPos()).name().equals("snow")) {
+                    for (int i = 0; i < 10; i++) {
+                        double x = client.player.getX() + client.world.random.nextDouble() * 10 - 5;
+                        double y = client.player.getY() + 5;
+                        double z = client.player.getZ() + client.world.random.nextDouble() * 10 - 5;
+                        client.world.addParticle(ParticleTypes.SNOWFLAKE, x, y, z, 0, 0, 0);
+                    }
+                }
+            }
         });
 
         WorldRenderEvents.BEFORE_ENTITIES.register(context -> {
