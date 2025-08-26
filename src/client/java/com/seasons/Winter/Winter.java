@@ -1,5 +1,7 @@
 package com.seasons.Winter;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +14,7 @@ import org.lwjgl.system.MemoryUtil;
 import com.mojang.blaze3d.buffers.GpuBuffer;
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.opengl.GlStateManager;
+import com.mojang.blaze3d.systems.GpuDevice;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.seasons.SeasonsMod.FogPayload;
@@ -28,10 +31,11 @@ import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderPhase;
 import net.minecraft.client.render.VertexFormats;
+import net.minecraft.client.render.RenderPhase.*;
 
 public class Winter {
-    private static boolean fogEnable;
-    private static boolean isWinter;
+    private static boolean fogEnable = false;
+    private static boolean isWinter = false;
     private static List<FogZone> fogZones = new ArrayList<>();
 
     public static void register() {
@@ -88,19 +92,31 @@ public class Winter {
             for (FogZone zone : fogZones) {
                 if (zone.isActive()) {
                     if (camera.getPos().distanceTo(new Vec3d(zone.x, zone.y, zone.z)) < zone.radius) {
+                        MinecraftClient.getInstance().execute(() -> {
+                            MinecraftClient.getInstance().inGameHud.setOverlayMessage(
+                                Text.literal("In Fog Zone"), false
+                            );
+                        });
                         float fogStart = 0.0f; // computed
                         float fogEnd = 16.0f; // computed
                         float r = 1.0f; // computed
                         float g = 1.0f; // computed
                         float b = 1.0f; // computed
 
-                        // Create buffer
-                        FloatBuffer buffer = BufferUtils.createFloatBuffer(6);
-                        buffer.put(fogStart).put(fogEnd).put(r).put(g).put(b).put(1.0f).flip();
+                        ByteBuffer buf = ByteBuffer.allocateDirect(8 * Float.BYTES).order(ByteOrder.nativeOrder());
+                        FloatBuffer fb = buf.asFloatBuffer();
+                        fb.put(fogStart)
+                        .put(fogEnd)
+                        .put(0.0f)
+                        .put(r).put(g).put(b)
+                        .put(1.0f)
+                        .put(0.0f);
+                        fb.flip();
 
-                        // Upload to GPU
-                        GpuBuffer gpuBuffer = GpuBuffer.create(buffer, true); // true = dynamic
-                        RenderSystem.setShaderFog(gpuBuffer);
+                        GpuDevice device = RenderSystem.getDevice();
+                        GpuBuffer gpuBuf = device.createBuffer(null, GpuBuffer.USAGE_UNIFORM, buf);
+
+                        RenderSystem.setShaderFog(gpuBuf.slice());
                     }
                 }
             }
