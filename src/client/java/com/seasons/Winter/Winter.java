@@ -21,10 +21,12 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.client.render.BackgroundRenderer;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderPhase;
 import net.minecraft.client.render.VertexFormats;
+import net.minecraft.client.render.BackgroundRenderer.FogType;
 import net.minecraft.client.render.RenderPhase.*;
 
 public class Winter {
@@ -74,13 +76,14 @@ public class Winter {
             fogZones.forEach(FogZone::tick);
         });
 
-        WorldRenderEvents.START.register(context -> {
+        WorldRenderEvents.BEFORE_ENTITIES.register(context -> {
             if (!isWinter) {
                 return;
             }
             MinecraftClient client = MinecraftClient.getInstance();
             if (client.player == null) return;
 
+            float tickDelta = context.tickDelta();
             Camera camera = client.gameRenderer.getCamera();
             ClientWorld world = client.world;
 
@@ -92,9 +95,7 @@ public class Winter {
                                 Text.literal("In Fog Zone"), false
                             );
                         });
-                        RenderSystem.setShaderFogStart(0.0f);
-                        RenderSystem.setShaderFogEnd(1.0f);
-                        RenderSystem.setShaderFogColor(1.0f, 1.0f, 1.0f);
+                        BackgroundRenderer.applyFog(camera, FogType.FOG_SKY, 4, true, tickDelta);
                     }
                 }
             }
