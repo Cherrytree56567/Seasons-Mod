@@ -98,7 +98,7 @@ public class Winter {
                             );
                         });
                         float fogStart = 0.0f; // computed
-                        float fogEnd = 16.0f; // computed
+                        float fogEnd = 1.0f; // computed
                         float r = 1.0f; // computed
                         float g = 1.0f; // computed
                         float b = 1.0f; // computed
