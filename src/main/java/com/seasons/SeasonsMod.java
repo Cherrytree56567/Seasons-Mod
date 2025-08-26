@@ -102,6 +102,8 @@ public class SeasonsMod implements ModInitializer {
             fogActive = true;
             fogTimer = duration + cooldown;
         }
+
+        world.setWeather(0, Integer.MAX_VALUE, true, false);
     }
 
     public static void register() {

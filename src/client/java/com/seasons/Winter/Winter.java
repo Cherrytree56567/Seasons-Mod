@@ -76,17 +76,6 @@ public class Winter {
             }
 
             fogZones.forEach(FogZone::tick);if (client.world == null) return;
-
-            if (client.player != null && client.world != null) {
-                if (client.world.getBiome(client.player.getBlockPos()).value().getPrecipitation(client.player.getBlockPos()).name().equals("snow")) {
-                    for (int i = 0; i < 10; i++) {
-                        double x = client.player.getX() + client.world.random.nextDouble() * 10 - 5;
-                        double y = client.player.getY() + 5;
-                        double z = client.player.getZ() + client.world.random.nextDouble() * 10 - 5;
-                        client.world.addParticle(ParticleTypes.SNOWFLAKE, x, y, z, 0, 0, 0);
-                    }
-                }
-            }
         });
 
         WorldRenderEvents.BEFORE_ENTITIES.register(context -> {
