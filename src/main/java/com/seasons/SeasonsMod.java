@@ -51,38 +51,8 @@ public class SeasonsMod implements ModInitializer {
     /*
      * Payloads
      */
-    public record FogPayload(boolean fogEnabled, int duration) implements CustomPayload {
-        public static final Identifier FOG_PACKET_ID = Identifier.of("seasonsmod", "fog_event");
-        public static final CustomPayload.Id<FogPayload> ID = new CustomPayload.Id<>(FOG_PACKET_ID);
-
-        public static final PacketCodec<RegistryByteBuf, FogPayload> CODEC =
-            PacketCodec.tuple(
-                PacketCodecs.BOOLEAN, FogPayload::fogEnabled,
-                PacketCodecs.INTEGER, FogPayload::duration,
-                FogPayload::new
-            );
-
-        @Override
-        public Id<? extends CustomPayload> getId() {
-            return ID;
-        }
-    }
-
-    public record WinterPayload(boolean winterEnabled) implements CustomPayload {
-        public static final Identifier WINTER_PACKET_ID = Identifier.of("seasonsmod", "winter_event");
-        public static final CustomPayload.Id<WinterPayload> ID = new CustomPayload.Id<>(WINTER_PACKET_ID);
-
-        public static final PacketCodec<RegistryByteBuf, WinterPayload> CODEC =
-            PacketCodec.tuple(
-                PacketCodecs.BOOLEAN, WinterPayload::winterEnabled,
-                WinterPayload::new
-            );
-
-        @Override
-        public Id<? extends CustomPayload> getId() {
-            return ID;
-        }
-    }
+    public static final Identifier FOG_PACKET_ID = new Identifier("seasonsmod", "fog_event");
+    public static final Identifier WINTER_PACKET_ID = new Identifier("seasonsmod", "winter_event");
 
     /*
      * For Debugging
@@ -127,10 +97,12 @@ public class SeasonsMod implements ModInitializer {
             int duration = 2400 + random.nextInt(24000 - 2400 + 1);
             int cooldown = 2400 + random.nextInt(4800);
 
-            FogPayload payload = new FogPayload(true, duration);
+            PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+            buf.writeBoolean(true);
+            buf.writeInt(duration);
 
             for (ServerPlayerEntity player : world.getPlayers()) {
-                ServerPlayNetworking.send(player, payload);
+                ServerPlayNetworking.send(player, FOG_PACKET_ID, buf);
                 sendMessage(player, "Fog has been enabled for " + duration + " ticks with a cooldown of " + cooldown + " ticks.");
             }
             fogActive = true;
@@ -139,9 +111,6 @@ public class SeasonsMod implements ModInitializer {
     }
 
     public static void register() {
-        PayloadTypeRegistry.playS2C().register(FogPayload.ID, FogPayload.CODEC);
-        PayloadTypeRegistry.playS2C().register(WinterPayload.ID, WinterPayload.CODEC);
-
         ServerTickEvents.END_SERVER_TICK.register(server -> {
             server.getWorlds().forEach(world -> {
                 Season currentSeason = getSeason(world);
@@ -150,9 +119,10 @@ public class SeasonsMod implements ModInitializer {
                 }
                 if (currentSeason.ordinal() != lastSeason) {
                     if (currentSeason == Season.WINTER) {
-                        WinterPayload payload = new WinterPayload(true);
+                        PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+                        buf.writeBoolean(true);
                         world.getPlayers().forEach(player -> {
-                            ServerPlayNetworking.send(player, payload);
+                            ServerPlayNetworking.send(player, WINTER_PACKET_ID, buf);
                         });
                     }
                     lastSeason = currentSeason.ordinal();

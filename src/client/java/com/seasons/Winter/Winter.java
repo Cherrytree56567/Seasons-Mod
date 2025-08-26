@@ -11,14 +11,8 @@ import org.joml.Vector4f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.system.MemoryUtil;
 
-import com.mojang.blaze3d.buffers.GpuBuffer;
-import com.mojang.blaze3d.buffers.GpuBufferSlice;
-import com.mojang.blaze3d.opengl.GlStateManager;
-import com.mojang.blaze3d.systems.GpuDevice;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.VertexFormat;
-import com.seasons.SeasonsMod.FogPayload;
-import com.seasons.SeasonsMod.WinterPayload;
+import com.seasons.SeasonsMod;
 
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -39,23 +33,24 @@ public class Winter {
     private static List<FogZone> fogZones = new ArrayList<>();
 
     public static void register() {
-		ClientPlayNetworking.registerGlobalReceiver(FogPayload.ID, (payload, context) -> {
-			boolean fogEnabled = payload.fogEnabled();
-			int fogTimer = payload.duration();
+		ClientPlayNetworking.registerGlobalReceiver(SeasonsMod.FOG_PACKET_ID, (client, handler, buf, responseSender) -> {
+			boolean fogEnabled = buf.readBoolean();
+			int fogTimer = buf.readInt();
 
-			MinecraftClient.getInstance().execute(() -> {
+			client.execute(() -> {
+                fogEnable = true;
                 MinecraftClient.getInstance().inGameHud.setOverlayMessage(
                     Text.literal("Fog enabled!"), false
                 );
             });
-
-			fogEnable = true;
 		});
 
-		ClientPlayNetworking.registerGlobalReceiver(WinterPayload.ID, (payload, context) -> {
-			boolean winterEnabled = payload.winterEnabled();
+		ClientPlayNetworking.registerGlobalReceiver(SeasonsMod.WINTER_PACKET_ID, (client, handler, buf, responseSender) -> {
+			boolean winterEnabled = buf.readBoolean();
 
-            isWinter = true;
+            client.execute(() -> {
+                isWinter = true;
+            });
 		});
 
         Random random = new Random();
@@ -97,26 +92,9 @@ public class Winter {
                                 Text.literal("In Fog Zone"), false
                             );
                         });
-                        float fogStart = 0.0f; // computed
-                        float fogEnd = 1.0f; // computed
-                        float r = 1.0f; // computed
-                        float g = 1.0f; // computed
-                        float b = 1.0f; // computed
-
-                        ByteBuffer buf = ByteBuffer.allocateDirect(8 * Float.BYTES).order(ByteOrder.nativeOrder());
-                        FloatBuffer fb = buf.asFloatBuffer();
-                        fb.put(fogStart)
-                        .put(fogEnd)
-                        .put(0.0f)
-                        .put(r).put(g).put(b)
-                        .put(1.0f)
-                        .put(0.0f);
-                        fb.flip();
-
-                        GpuDevice device = RenderSystem.getDevice();
-                        GpuBuffer gpuBuf = device.createBuffer(null, GpuBuffer.USAGE_UNIFORM, buf);
-
-                        RenderSystem.setShaderFog(gpuBuf.slice());
+                        RenderSystem.setShaderFogStart(0.0f);
+                        RenderSystem.setShaderFogEnd(1.0f);
+                        RenderSystem.setShaderFogColor(1.0f, 1.0f, 1.0f);
                     }
                 }
             }
