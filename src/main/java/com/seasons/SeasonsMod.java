@@ -47,6 +47,7 @@ public class SeasonsMod implements ModInitializer {
      */
     public static final Identifier FOG_PACKET_ID = new Identifier("seasonsmod", "fog_event");
     public static final Identifier WINTER_PACKET_ID = new Identifier("seasonsmod", "winter_event");
+    public static final Identifier AUTUMN_PACKET_ID = new Identifier("seasonsmod", "autumn_event");
 
     /*
      * For Debugging
@@ -106,6 +107,10 @@ public class SeasonsMod implements ModInitializer {
         world.setWeather(0, Integer.MAX_VALUE, true, false);
     }
 
+    private static void runAutumn(ServerWorld world) {
+
+    }
+
     public static void register() {
         ServerTickEvents.END_SERVER_TICK.register(server -> {
             server.getWorlds().forEach(world -> {
@@ -113,12 +118,27 @@ public class SeasonsMod implements ModInitializer {
                 if (currentSeason == Season.WINTER) {
                     runWinter(world);
                 }
+                if (currentSeason == Season.AUTUMN) {
+                    runAutumn(world);
+                }
                 if (currentSeason.ordinal() != lastSeason) {
                     if (currentSeason == Season.WINTER) {
                         PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
                         buf.writeBoolean(true);
                         world.getPlayers().forEach(player -> {
                             ServerPlayNetworking.send(player, WINTER_PACKET_ID, buf);
+                        });
+                        PacketByteBuf Abuf = new PacketByteBuf(Unpooled.buffer());
+                        Abuf.writeBoolean(false);
+                        world.getPlayers().forEach(player -> {
+                            ServerPlayNetworking.send(player, AUTUMN_PACKET_ID, Abuf);
+                        });
+                    }
+                    if (currentSeason == Season.AUTUMN) {
+                        PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+                        buf.writeBoolean(true);
+                        world.getPlayers().forEach(player -> {
+                            ServerPlayNetworking.send(player, AUTUMN_PACKET_ID, buf);
                         });
                     }
                     lastSeason = currentSeason.ordinal();

@@ -40,13 +40,6 @@ public class Winter {
 		ClientPlayNetworking.registerGlobalReceiver(SeasonsMod.FOG_PACKET_ID, (client, handler, buf, responseSender) -> {
 			boolean fogEnabled = buf.readBoolean();
 			int fogTimer = buf.readInt();
-
-			client.execute(() -> {
-                fogEnable = true;
-                MinecraftClient.getInstance().inGameHud.setOverlayMessage(
-                    Text.literal("Fog enabled!"), false
-                );
-            });
 		});
 
 		ClientPlayNetworking.registerGlobalReceiver(SeasonsMod.WINTER_PACKET_ID, (client, handler, buf, responseSender) -> {
@@ -54,6 +47,9 @@ public class Winter {
 
             client.execute(() -> {
                 isWinter = true;
+                MinecraftClient.getInstance().inGameHud.setOverlayMessage(
+                    Text.literal("Winter!"), false
+                );
             });
 		});
 
@@ -92,12 +88,7 @@ public class Winter {
             for (FogZone zone : fogZones) {
                 if (zone.isActive()) {
                     if (camera.getPos().distanceTo(new Vec3d(zone.x, zone.y, zone.z)) < zone.radius) {
-                        MinecraftClient.getInstance().execute(() -> {
-                            MinecraftClient.getInstance().inGameHud.setOverlayMessage(
-                                Text.literal("In Fog Zone"), false
-                            );
-                        });
-                        BackgroundRenderer.applyFog(camera, FogType.FOG_SKY, 4, true, tickDelta);
+                        BackgroundRenderer.applyFog(camera, FogType.FOG_SKY, 32, true, tickDelta);
                     }
                 }
             }
