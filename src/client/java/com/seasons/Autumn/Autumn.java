@@ -52,9 +52,6 @@ public class Autumn {
             int r = (int)(InitialRed + (BrownR - InitialRed) * transitionProgress);
             int g = (int)(InitialGreen + (BrownG - InitialGreen) * transitionProgress);
             int b = (int)(InitialBlue + (BrownB - InitialBlue) * transitionProgress);
-            MinecraftClient client = MinecraftClient.getInstance();
-            Camera camera = client.gameRenderer.getCamera();
-            MinecraftClient.getInstance().worldRenderer.scheduleBlockRender((int)camera.getPos().x, (int)camera.getPos().y, (int)camera.getPos().z);
             return (r << 16) | (g << 8) | b;
         }, Blocks.OAK_LEAVES, Blocks.BIRCH_LEAVES, Blocks.SPRUCE_LEAVES, Blocks.JUNGLE_LEAVES, Blocks.ACACIA_LEAVES, Blocks.DARK_OAK_LEAVES);
 

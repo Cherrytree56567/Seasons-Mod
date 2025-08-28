@@ -1,8 +1,8 @@
 {
 	"schemaVersion": 1,
-	"id": "seasons-mod",
+	"id": "winter-seasons-mod",
 	"version": "${version}",
-	"name": "Seasons Mod",
+	"name": "Winter Seasons Mod",
 	"description": "This is an example description! Tell everyone what your mod is about!",
 	"authors": [
 		"Me!"

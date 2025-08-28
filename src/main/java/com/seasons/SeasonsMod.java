@@ -134,13 +134,13 @@ public class SeasonsMod implements ModInitializer {
                             ServerPlayNetworking.send(player, AUTUMN_PACKET_ID, Abuf);
                         });
                     }
-                    if (currentSeason == Season.AUTUMN) {
+                    /*if (currentSeason == Season.AUTUMN) {
                         PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
                         buf.writeBoolean(true);
                         world.getPlayers().forEach(player -> {
                             ServerPlayNetworking.send(player, AUTUMN_PACKET_ID, buf);
                         });
-                    }
+                    }*/
                     lastSeason = currentSeason.ordinal();
                     world.getPlayers().forEach(player -> {
                         sendMessage(player, "Season has changed! It's now " + getSeasonName(currentSeason));

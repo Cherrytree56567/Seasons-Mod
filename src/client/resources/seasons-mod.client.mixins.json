@@ -3,7 +3,7 @@
 	"package": "com.seasons.mixin.client",
 	"compatibilityLevel": "JAVA_21",
 	"client": [
-		"ExampleClientMixin"
+		"BackgroundRendererMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

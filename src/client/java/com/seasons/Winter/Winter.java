@@ -13,6 +13,7 @@ import org.lwjgl.system.MemoryUtil;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.seasons.SeasonsMod;
+import com.seasons.mixin.client.BackgroundRendererMixin;
 
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -34,7 +35,6 @@ import net.minecraft.client.render.RenderPhase.*;
 public class Winter {
     private static boolean fogEnable = false;
     private static boolean isWinter = false;
-    private static List<FogZone> fogZones = new ArrayList<>();
 
     public static void register() {
 		ClientPlayNetworking.registerGlobalReceiver(SeasonsMod.FOG_PACKET_ID, (client, handler, buf, responseSender) -> {
@@ -53,45 +53,12 @@ public class Winter {
             });
 		});
 
-        Random random = new Random();
-
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            if (!isWinter) {
+            if (!isWinter || !fogEnable) {
                 return;
             }
-            fogZones.removeIf(zone -> !zone.isActive());
 
-            if (random.nextInt(1000) < 5) {
-                ClientWorld world = client.world;
-                if (world != null) {
-                    double px = client.player.getX() + random.nextInt(50) - 25;
-                    double py = client.player.getY();
-                    double pz = client.player.getZ() + random.nextInt(50) - 25;
-                    fogZones.add(new FogZone(px, py, pz, 16f, 200 + random.nextInt(400)));
-                }
-            }
-
-            fogZones.forEach(FogZone::tick);if (client.world == null) return;
-        });
-
-        WorldRenderEvents.BEFORE_ENTITIES.register(context -> {
-            if (!isWinter) {
-                return;
-            }
-            MinecraftClient client = MinecraftClient.getInstance();
-            if (client.player == null) return;
-
-            float tickDelta = context.tickDelta();
-            Camera camera = client.gameRenderer.getCamera();
-            ClientWorld world = client.world;
-
-            for (FogZone zone : fogZones) {
-                if (zone.isActive()) {
-                    if (camera.getPos().distanceTo(new Vec3d(zone.x, zone.y, zone.z)) < zone.radius) {
-                        BackgroundRenderer.applyFog(camera, FogType.FOG_SKY, 32, true, tickDelta);
-                    }
-                }
-            }
+            FogState.setFogEnable(FogState.getFogEnable() + 0.01f);
         });
 	}
 }

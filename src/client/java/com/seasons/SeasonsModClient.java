@@ -8,7 +8,7 @@ import net.fabricmc.api.ClientModInitializer;
 public class SeasonsModClient implements ClientModInitializer {
 	public static void register() {
 		Winter.register();
-		Autumn.register();
+		//Autumn.register();
 	}
 
 	@Override
