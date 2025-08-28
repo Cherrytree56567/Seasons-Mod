@@ -103,8 +103,6 @@ public class SeasonsMod implements ModInitializer {
             fogActive = true;
             fogTimer = duration + cooldown;
         }
-
-        world.setWeather(0, Integer.MAX_VALUE, true, false);
     }
 
     private static void runAutumn(ServerWorld world) {
@@ -153,18 +151,30 @@ public class SeasonsMod implements ModInitializer {
             dispatcher.register(literal("fog")
                 .then(literal("stop")
                     .executes(context -> {
-                        ServerPlayerEntity player = context.getSource().getPlayer();
                         SeasonsMod.fogActive = false;
                         fogTimer = 0;
-                        player.sendMessage(Text.literal("Fog stopped!"), false);
+                        PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+                        buf.writeBoolean(false);
+                        buf.writeInt(0);
+
+                        for (ServerPlayerEntity player : context.getSource().getServer().getPlayerManager().getPlayerList()) { // ik this is long, but bear with it
+                            ServerPlayNetworking.send(player, FOG_PACKET_ID, buf);
+                            player.sendMessage(Text.literal("Fog stopped!"), false);
+                        }
                         return 1;
                     })
                 )
                 .then(literal("reset")
                     .executes(context -> {
-                        ServerPlayerEntity player = context.getSource().getPlayer();
                         fogTimer = 0;
-                        player.sendMessage(Text.literal("Fog timer reset!"), false);
+                        PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+                        buf.writeBoolean(true);
+                        buf.writeInt(1); // other wise whats the point?
+
+                        for (ServerPlayerEntity player : context.getSource().getServer().getPlayerManager().getPlayerList()) {
+                            ServerPlayNetworking.send(player, FOG_PACKET_ID, buf);
+                            player.sendMessage(Text.literal("Fog timer reset!"), false);
+                        }
                         return 1;
                     })
                 )
@@ -172,9 +182,16 @@ public class SeasonsMod implements ModInitializer {
                     .then(argument("ticks", IntegerArgumentType.integer())
                         .executes(context -> {
                             int ticks = IntegerArgumentType.getInteger(context, "ticks");
-                            ServerPlayerEntity player = context.getSource().getPlayer();
                             fogTimer += ticks;
-                            player.sendMessage(Text.literal("Added " + ticks + " ticks to fog timer."), false);
+                            
+                            PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+                            buf.writeBoolean(true);
+                            buf.writeInt(fogTimer);
+
+                            for (ServerPlayerEntity player : context.getSource().getServer().getPlayerManager().getPlayerList()) {
+                                ServerPlayNetworking.send(player, FOG_PACKET_ID, buf);
+                                player.sendMessage(Text.literal("Added " + ticks + " ticks to fog timer."), false);
+                            }
                             return 1;
                         })
                     )
@@ -184,8 +201,15 @@ public class SeasonsMod implements ModInitializer {
                         .executes(context -> {
                             int ticks = IntegerArgumentType.getInteger(context, "ticks");
                             fogTimer = ticks;
-                            ServerPlayerEntity player = context.getSource().getPlayer();
-                            player.sendMessage(Text.literal("Fog timer set to tick " + ticks), false);
+                            
+                            PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+                            buf.writeBoolean(true);
+                            buf.writeInt(fogTimer);
+
+                            for (ServerPlayerEntity player : context.getSource().getServer().getPlayerManager().getPlayerList()) {
+                                ServerPlayNetworking.send(player, FOG_PACKET_ID, buf);
+                                player.sendMessage(Text.literal("Fog timer set to tick " + ticks), false);
+                            }
                             return 1;
                         })
                     )

@@ -35,11 +35,13 @@ import net.minecraft.client.render.RenderPhase.*;
 public class Winter {
     private static boolean fogEnable = false;
     private static boolean isWinter = false;
+    private static long fogTimer = 0;
 
     public static void register() {
 		ClientPlayNetworking.registerGlobalReceiver(SeasonsMod.FOG_PACKET_ID, (client, handler, buf, responseSender) -> {
 			boolean fogEnabled = buf.readBoolean();
-			int fogTimer = buf.readInt();
+			fogTimer = buf.readInt();
+            fogEnable = fogEnabled;
 		});
 
 		ClientPlayNetworking.registerGlobalReceiver(SeasonsMod.WINTER_PACKET_ID, (client, handler, buf, responseSender) -> {
@@ -54,11 +56,20 @@ public class Winter {
 		});
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            if (!isWinter || !fogEnable) {
+            if (!isWinter) {
                 return;
             }
 
-            FogState.setFogEnable(FogState.getFogEnable() + 0.01f);
+            if (fogTimer == 0 && !fogEnable) {
+                fogEnable = false;
+            }
+
+            if (fogEnable) {
+                FogState.setFogEnable(FogState.getFogEnable() + 0.01f);
+            } else {
+                FogState.setFogEnable(FogState.getFogEnable() - 0.01f);
+            }
+            fogTimer -= 1;
         });
 	}
 }

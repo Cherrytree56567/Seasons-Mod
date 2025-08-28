@@ -27,10 +27,10 @@ import com.seasons.Winter.FogState;
 @Mixin(BackgroundRenderer.class)
 public class BackgroundRendererMixin {
 	@Unique
-	private Boolean fogEnabled = true;
+	private static Boolean fogEnabled = true;
 
 	@Inject(method = "applyFog", at = @At("TAIL"))
-	private void WinterFog(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog, float tickDelta, CallbackInfo info) {
+	private static void WinterFog(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog, float tickDelta, CallbackInfo info) {
 		var world = MinecraftClient.getInstance().world;
 		var player = MinecraftClient.getInstance().player;
 		var cameraSubmersionType = camera.getSubmersionType();
