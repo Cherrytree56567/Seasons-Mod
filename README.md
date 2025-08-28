@@ -3,12 +3,12 @@ A simple mod that forces rain and snow during winter and adds fog during the nig
 
 # Features
  - Fog
- - Contant Rain & Snow
  - Weather Timer
+ - Snow Particles
 
 # Goals
- - Snow particles
- - Winter Freeze
+ - Frost Bite
+ - Fire Warming
 
 # Testing
 To test, set the time to 504000 ticks to enable winter. If you want to see the fog disappeaar, set the time to 0 ticks and then run `/fog stop`.
