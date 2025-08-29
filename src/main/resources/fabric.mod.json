@@ -3,13 +3,13 @@
 	"id": "winter-seasons-mod",
 	"version": "${version}",
 	"name": "Winter Seasons Mod",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"description": "A mod that adds winter-themed features to the game.",
 	"authors": [
-		"Me!"
+		"CherryTree56567"
 	],
 	"contact": {
 		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"sources": "https://github.com/Cherrytree56567/Seasons-Mod"
 	},
 	"license": "CC0-1.0",
 	"icon": "assets/seasons-mod/icon.png",
@@ -37,8 +37,5 @@
 		"minecraft": "~1.19.4",
 		"java": ">=21",
 		"fabric-api": "*"
-	},
-	"suggests": {
-		"another-mod": "*"
 	}
 }
