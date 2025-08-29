@@ -5,8 +5,6 @@ A simple mod that forces rain and snow during winter and adds fog during the nig
  - Fog
  - Weather Timer
  - Snow Particles
-
-# Goals
  - Frost Bite
  - Fire Warming
 

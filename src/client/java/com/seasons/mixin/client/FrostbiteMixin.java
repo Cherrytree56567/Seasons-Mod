@@ -11,6 +11,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
+import net.minecraft.world.LightType;
 
 @Environment(EnvType.CLIENT)
 @Mixin(PlayerEntity.class)
@@ -26,11 +27,23 @@ public abstract class FrostbiteMixin {
         PlayerEntity player = (PlayerEntity) (Object) this;
         if (player.getWorld().isClient) return;
 
+        int blockLight = player.getWorld().getLightLevel(LightType.BLOCK, player.getBlockPos());
+
+        player.sendMessage(Text.literal("Block Light: " + blockLight), false);
+
         if (isOutside(player) && hasNoArmor(player)) {
-            outdoorTicks++;
+            if (blockLight < 8) {
+                outdoorTicks += 2;
+            } else if (blockLight < 12) {
+                outdoorTicks += 1;
+            } else {
+                outdoorTicks += 0;
+            }
             if (outdoorTicks >= 1200) {
                 if (currFrost != 140) {
-                    currFrost++;
+                    if (blockLight < 12) {
+                        currFrost++;
+                    }
                     player.setFrozenTicks(Math.min(currFrost, 140));
                 }
                 if (currFrost == 140) {
@@ -39,10 +52,29 @@ public abstract class FrostbiteMixin {
             }
         } else {
             if (currFrost > 0) {
-                currFrost--;
+                if (blockLight < 8) {
+                    currFrost -= 1;
+                } else if (blockLight < 12) {
+                    currFrost -= 2;
+                } else if (blockLight < 14) {
+                    currFrost -= 3;
+                } else {
+                    currFrost -= 4;
+                }
                 player.setFrozenTicks(currFrost);
             }
-            outdoorTicks -= 1;
+            if (outdoorTicks < 0) {
+                if (blockLight < 8) {
+                    outdoorTicks -= 1;
+                    currFrost -= 1;
+                } else if (blockLight < 12) {
+                    outdoorTicks -= 2;
+                } else if (blockLight < 14) {
+                    outdoorTicks -= 3;
+                } else {
+                    outdoorTicks -= 4;
+                }
+            }
         }
 
         if (player.inPowderSnow) {
