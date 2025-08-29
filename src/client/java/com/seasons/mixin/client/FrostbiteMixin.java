@@ -28,7 +28,7 @@ public abstract class FrostbiteMixin {
 
         if (isOutside(player) && hasNoArmor(player)) {
             outdoorTicks++;
-            if (outdoorTicks >= 5) {
+            if (outdoorTicks >= 1200) {
                 if (currFrost != 140) {
                     currFrost++;
                     player.setFrozenTicks(Math.min(currFrost, 140));
@@ -39,7 +39,8 @@ public abstract class FrostbiteMixin {
             }
         } else {
             if (currFrost > 0) {
-                player.setFrozenTicks(currFrost - 1);
+                currFrost--;
+                player.setFrozenTicks(currFrost);
             }
             outdoorTicks -= 1;
         }
