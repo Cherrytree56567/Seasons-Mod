@@ -29,8 +29,6 @@ public abstract class FrostbiteMixin {
 
         int blockLight = player.getWorld().getLightLevel(LightType.BLOCK, player.getBlockPos());
 
-        player.sendMessage(Text.literal("Block Light: " + blockLight), false);
-
         if (isOutside(player) && hasNoArmor(player)) {
             if (blockLight < 8) {
                 outdoorTicks += 2;
