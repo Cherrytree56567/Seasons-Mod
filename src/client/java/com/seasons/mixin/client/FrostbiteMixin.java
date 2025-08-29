@@ -6,6 +6,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import com.seasons.Winter.Winter;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.entity.player.PlayerEntity;
@@ -24,6 +26,9 @@ public abstract class FrostbiteMixin {
 
     @Inject(method = "tick", at = @At("TAIL"))
     private void onPlayerTick(CallbackInfo ci) {
+        if (!Winter.IsWinter()) {
+            return;
+        }
         PlayerEntity player = (PlayerEntity) (Object) this;
         if (player.getWorld().isClient) return;
 
