@@ -6,8 +6,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.seasons.Winter.Winter;
-import com.seasons.Winter.Particles.CustomSnowflake;
-import com.seasons.Winter.Particles.CustomSnowflakeFactory;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -15,7 +13,6 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.client.MinecraftClient;
 
 @Environment(EnvType.CLIENT)

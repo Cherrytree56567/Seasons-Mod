@@ -55,8 +55,8 @@ public class BackgroundRendererMixin {
 			fogColor = new Vec3d(0.1f, 0.1f, 0.1f);
 			defaultFogColor = new Vec3d(0f, 0f, 0f);
 		} else {
-			fogStartAddition = 100f;
-			fogEndAddition = 200f;
+			fogStartAddition = 0f;
+			fogEndAddition = 1f;
 			fogColor = new Vec3d(0.96f, 0.98f, 0.94f);
 			defaultFogColor = new Vec3d(0.68f, 0.83f, 1f);
 		}
