@@ -1,5 +1,5 @@
 # Winter Seasons Mod
-A simple mod that adds snow during winter and adds fog during the night and morning.
+A simple `Fabric` `1.19.4` mod that adds snow during winter and adds fog during the night and morning.
 
 # Features
  - Fog
