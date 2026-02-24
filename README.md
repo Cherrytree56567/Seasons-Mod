@@ -16,5 +16,8 @@ To test, set the time to 504000 ticks to enable winter. Each season runs for `16
 # Running
 To run, use `./gradlew.bat runClient` for Windows and `./gradlew runClient` for Linux. It will launch a Minecraft window. From there, you can create a new world and test the mod.
 
+# Running
+To run, use `./gradlew.bat runClient` for Windows and `./gradlew runClient` for Linux. It will launch a Minecraft window. From there, you can create a new world and test the mod.
+
 # Thanks
  - [@IMB11 - Fog Code](https://github.com/IMB11/Fog)
