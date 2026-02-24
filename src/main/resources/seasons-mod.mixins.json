@@ -1,9 +1,9 @@
 {
 	"required": true,
-	"package": "com.seasons.mixin",
+	"package": "com.ct5.seasons_mod.mixin",
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [
-		"ExampleMixin"
+		"SpringMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

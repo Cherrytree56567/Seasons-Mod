@@ -1,4 +1,4 @@
-package com.seasons;
+package com.ct5.seasons_mod;
 
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;

@@ -1,11 +1,12 @@
 {
 	"required": true,
-	"package": "com.seasons.mixin.client",
+	"package": "com.ct5.seasons_mod.mixin.client",
 	"compatibilityLevel": "JAVA_21",
 	"client": [
-		"BackgroundRendererMixin",
-		"SnowMixin",
-		"FrostbiteMixin"
+		"FogRendererMixin",
+		"AtmosphericFogEnvironmentMixin",
+		"FrostbiteMixin",
+		"SnowMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
