@@ -1,6 +1,6 @@
 # Seasons Mod
 A simple `Fabric` `1.21.11` mod that adds snow during winter and adds fog during the night and morning.
-![Demo](https://github.com/Cherrytree56567/Seasons-Mod/blob/master/Demoes/2.1.png?raw=true)
+![Demo](https://github.com/Cherrytree56567/Seasons-Mod/blob/master/Demoes/alpha1.png?raw=true)
 
 # Features
  - Fog
