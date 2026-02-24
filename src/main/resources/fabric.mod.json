@@ -3,13 +3,13 @@
 	"id": "seasons-mod",
 	"version": "${version}",
 	"name": "Seasons Mod",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"description": "A Seasons Mod that adds fog and frostbite during Winter and Brown’d leaves during Autumn.",
 	"authors": [
-		"Me!"
+		"CT5"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"homepage": "https://modrinth.com/mod/seasons-mod",
+		"sources": "https://github.com/Cherrytree56567/Seasons-Mod"
 	},
 	"license": "CC0-1.0",
 	"icon": "assets/seasons-mod/icon.png",
