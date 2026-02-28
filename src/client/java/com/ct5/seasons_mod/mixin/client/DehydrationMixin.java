@@ -46,8 +46,8 @@ public abstract class DehydrationMixin {
         }
 
         int DehydrationValue = (player.getArmorValue() / 2) + 1;
-
-        if (player.level().canSeeSky(player.blockPosition()) && !player.isUnderWater()) {
+        
+        if (player.level().canSeeSky(player.blockPosition()) && !player.isUnderWater() && !player.level().isDarkOutside()) {
             outdoorTicks++;
             if (outdoorTicks >= 180 * (12 - DehydrationValue)) {
                 if (aTick != 20) {

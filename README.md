@@ -1,5 +1,5 @@
 # Seasons Mod
-A simple `Fabric` `1.21.11` mod that adds snow during winter and adds fog during the night and morning.
+A simple `Fabric` `1.21.11` mod that adds snow and fog during winter, brown leaves in autumn, faster crops in spring and dehydration in summer.
 ![Demo](https://github.com/Cherrytree56567/Seasons-Mod/blob/master/Demoes/alpha1.png?raw=true)
 
 # Features
@@ -8,7 +8,9 @@ A simple `Fabric` `1.21.11` mod that adds snow during winter and adds fog during
  - Snow Particles
  - Frost Bite
  - Fire Warming
- - Leaves Color Change in Autumn
+ - Leaves Change Color in Autumn
+ - Dehydration in Summer
+ - Crops grow faster in Spring
 
 # Testing
 To test, set the time to 504000 ticks to enable winter. Each season runs for `168000` ticks. Autumn leaves will only turn brown in newly generated chunks.
