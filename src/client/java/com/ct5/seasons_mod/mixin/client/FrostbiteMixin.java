@@ -46,8 +46,6 @@ public abstract class FrostbiteMixin {
             return;
         }
 
-        Logger.getAnonymousLogger().info(String.valueOf(outdoorTicks));
-
         if (player.level().canSeeSky(player.blockPosition())) {
             outdoorTicks += -(1f / 6f) * blockLight + 1f;
             if (outdoorTicks >= (300 * (player.getArmorValue() + 1))) {
@@ -59,7 +57,6 @@ public abstract class FrostbiteMixin {
                     }
                 }
                 player.setTicksFrozen(Math.min(currFrost, 140));
-                Logger.getAnonymousLogger().warning(String.valueOf(currFrost));
                 if (currFrost == 140) {
                     player.hurt(player.damageSources().freeze(), 1f);
                 }

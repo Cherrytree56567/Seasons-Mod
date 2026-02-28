@@ -6,6 +6,8 @@ public class SeasonsModClient implements ClientModInitializer {
 	public static void register() {
 		AutumnClient.register();
 		WinterClient.register();
+		SummerClient.register();
+		SpringClient.register();
 	}
 
 	@Override

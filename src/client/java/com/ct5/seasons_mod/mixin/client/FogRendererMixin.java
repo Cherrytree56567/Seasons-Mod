@@ -21,11 +21,11 @@ public class FogRendererMixin {
 
 	@Redirect(method = "setupFog", at = @At(value = "FIELD", target = "Lnet/minecraft/client/renderer/fog/FogData;renderDistanceStart:F", opcode = Opcodes.PUTFIELD))
     private void modifyRenderDistanceStart(FogData data, float renderDistanceStart) {
-		data.renderDistanceStart = (float)(renderDistanceStart * WinterClient.transitionProgress + 10f * (1f - WinterClient.transitionProgress));
+		  data.renderDistanceStart = (float)(renderDistanceStart * WinterClient.transitionProgress + 10f * (1f - WinterClient.transitionProgress));
     }
 
     @Redirect(method = "setupFog", at = @At(value = "FIELD", target = "Lnet/minecraft/client/renderer/fog/FogData;renderDistanceEnd:F", opcode = Opcodes.PUTFIELD))
     private void modifyRenderDistanceEnd(FogData data, float renderDistanceEnd) {
-		data.renderDistanceEnd = (float)(renderDistanceEnd * WinterClient.transitionProgress + 15f * (1f - WinterClient.transitionProgress));
+		  data.renderDistanceEnd = (float)(renderDistanceEnd * WinterClient.transitionProgress + 15f * (1f - WinterClient.transitionProgress));
     }
 }

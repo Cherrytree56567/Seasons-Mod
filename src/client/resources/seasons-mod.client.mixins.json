@@ -6,7 +6,8 @@
 		"FogRendererMixin",
 		"AtmosphericFogEnvironmentMixin",
 		"FrostbiteMixin",
-		"SnowMixin"
+		"SnowMixin",
+		"DehydrationMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
